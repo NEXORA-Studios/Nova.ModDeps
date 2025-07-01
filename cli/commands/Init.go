@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/NEXORA-Studios/Nova.ModDeps/core/instance"
+	"github.com/NEXORA-Studios/Nova.ModDeps/core/lock"
 	"github.com/NEXORA-Studios/Nova.ModDeps/core/meta"
 	"github.com/spf13/cobra"
 )
@@ -29,6 +30,12 @@ var InitCmd = &cobra.Command{
 			Mods:             []meta.IModItem{},
 		})
 
-		
+		lock.Write(lock.ILockFile{
+			LockFileVersion: 1,
+			BaseDir:         "mods",
+			Pending:         []lock.ILockModItem{},
+			Installed:       []lock.ILockModItem{},
+			NeedRemove:      []lock.ILockModItem{},
+		})
 	},
 }

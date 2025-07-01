@@ -6,23 +6,12 @@ import (
 	"path/filepath"
 )
 
-const useCwd = true
-
 var logger = Logger{}
 
 func GetModPackageJsonPath() string {
-	if useCwd {
-		cwd, err := os.Getwd()
-		if err != nil {
-			logger.Fatal(fmt.Sprintf("尝试使用当前工作目录获取 mod.package.json 路径失败: %v", err))
-		}
-		return filepath.Join(cwd, "mod.package.json")
-	} else {
-		exe, err := os.Executable()
-		if err != nil {
-			logger.Fatal(fmt.Sprintf("尝试使用当前可执行文件路径获取 mod.package.json 路径失败: %v", err))
-		}
-		exeDir := filepath.Dir(exe)
-		return filepath.Join(exeDir, "mod.package.json")
+	cwd, err := os.Getwd()
+	if err != nil {
+		logger.Fatal(fmt.Sprintf("尝试使用当前工作目录获取 mod.package.json 路径失败: %v", err))
 	}
+	return filepath.Join(cwd, "mod.package.json")
 }
