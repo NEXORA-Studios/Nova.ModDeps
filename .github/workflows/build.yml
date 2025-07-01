@@ -1,0 +1,35 @@
+name: Build Nova.ModDeps (NovaDM CLI)
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [ubuntu-latest, windows-latest, macos-latest]
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Go
+              uses: actions/setup-go@v5
+              with:
+                  go-version: "1.24"
+
+            - name: Build novadm
+              run: |
+                  mkdir -p bin
+                  go build -o bin/novadm.exe cli/main.go
+
+            - name: Upload Artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: novadm-${{ matrix.os }}
+                  path: bin/novadm.exe

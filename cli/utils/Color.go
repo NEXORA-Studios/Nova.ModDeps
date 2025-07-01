@@ -1,0 +1,26 @@
+package utils
+
+const (
+	ColorReset         = "\033[0m"
+	ColorRed           = "\033[31m"
+	ColorGreen         = "\033[32m"
+	ColorYellow        = "\033[33m"
+	ColorBlue          = "\033[34m"
+	ColorMagenta       = "\033[35m"
+	ColorCyan          = "\033[36m"
+	ColorWhite         = "\033[37m"
+	ColorGray          = "\033[90m"
+	ColorLightRed      = "\033[91m"
+	ColorLightGreen    = "\033[92m"
+	ColorLightYellow   = "\033[93m"
+	ColorLightBlue     = "\033[94m"
+	ColorLightMagenta  = "\033[95m"
+	ColorLightCyan     = "\033[96m"
+	ColorLightWhite    = "\033[97m"
+	ColorBold          = "\033[1m"
+	ColorUnderline     = "\033[4m"
+	ColorBlink         = "\033[5m"
+	ColorReverse       = "\033[7m"
+	ColorHidden        = "\033[8m"
+	ColorStrikethrough = "\033[9m"
+)

@@ -1,0 +1,125 @@
+package commands
+
+import (
+	"fmt"
+	"os"
+	"slices"
+	"strconv"
+
+	"github.com/NEXORA-Studios/Nova.ModDeps/cli/utils"
+	"github.com/NEXORA-Studios/Nova.ModDeps/core/api/modrinth"
+	"github.com/NEXORA-Studios/Nova.ModDeps/core/meta"
+	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/spf13/cobra"
+)
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+// PrintProjectVersionsWithPagination 打印指定项目的所有版本，支持本地分页
+func PrintProjectVersionsWithPagination(projectID string, page int, size int) {
+	versions, err := modrinth.GetProjectVersion(projectID)
+	if err != nil {
+		panic(fmt.Sprintf("获取版本失败: %v\n", err))
+	}
+	var localMeta *meta.IModPackageJson
+	metaFunc := meta.MetaFunctions{}
+	m, err := metaFunc.Read()
+	if err != nil {
+		panic(fmt.Sprintf("读取 mod.package.json 失败: %v\n请确认是否在 Minecraft 实例根目录下运行，和 mod.package.json 文件是否存在\n若不存在，请先使用 \"novadm init\" 初始化", err))
+	}
+	localMeta = &m
+	if size <= 0 {
+		size = 10 // 默认每页10条
+	}
+	total := len(versions)
+	start := (page - 1) * size
+	if start >= total {
+		fmt.Println("没有更多数据了。")
+		return
+	}
+	end := min(start+size, total)
+	fmt.Printf("项目 %s 共找到 %d 个版本，当前为 %d/%d 页\n", projectID, total, page, (total+size-1)/size)
+
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"版本 ID", "名称", "发布时间", "支持游戏版本", "加载器"})
+
+	for _, v := range versions[start:end] {
+		gameVersions := ""
+		if len(v.GameVersions) > 0 {
+			gameVersions = v.GameVersions[0]
+			if len(v.GameVersions) > 1 {
+				gameVersions += " ~ " + v.GameVersions[len(v.GameVersions)-1]
+			}
+		}
+		loaders := ""
+		if len(v.Loaders) > 0 {
+			loaders = v.Loaders[0]
+			if len(v.Loaders) > 1 {
+				loaders += " / " + v.Loaders[len(v.Loaders)-1]
+			}
+		}
+
+		matchGame := slices.Contains(v.GameVersions, localMeta.MinecraftVersion)
+		// 检查每一个 Loader
+		matchLoader := false
+		for _, loader := range v.Loaders {
+			if slices.Contains(localMeta.ModLoader, loader) {
+				matchLoader = true
+				break
+			}
+		}
+
+		switch {
+		case matchGame && matchLoader:
+			gameVersions = utils.ColorGreen + gameVersions + utils.ColorReset
+			loaders = utils.ColorGreen + loaders + utils.ColorReset
+
+		case matchGame && !matchLoader:
+			gameVersions = utils.ColorYellow + gameVersions + utils.ColorReset
+			loaders = utils.ColorRed + loaders + utils.ColorReset
+
+		case !matchGame && matchLoader:
+			gameVersions = utils.ColorRed + gameVersions + utils.ColorReset
+			loaders = utils.ColorYellow + loaders + utils.ColorReset
+
+		case !matchGame && !matchLoader:
+			gameVersions = utils.ColorRed + gameVersions + utils.ColorReset
+			loaders = utils.ColorRed + loaders + utils.ColorReset
+		}
+
+		row := table.Row{
+			v.ID,
+			v.Name,
+			v.DatePublished,
+			gameVersions,
+			loaders,
+		}
+
+		t.AppendRow(row)
+	}
+	t.SetStyle(table.StyleLight)
+	t.Render()
+}
+
+var VersionCmd = &cobra.Command{
+	Use:   "version <project_id> [page]",
+	Short: "查看指定项目的所有版本",
+	Args:  cobra.RangeArgs(1, 2),
+	Run: func(cmd *cobra.Command, args []string) {
+		projectID := args[0]
+		page := 1
+		if len(args) >= 2 {
+			p, err := strconv.Atoi(args[1])
+			if err == nil && p > 0 {
+				page = p
+			}
+		}
+		PrintProjectVersionsWithPagination(projectID, page, 10)
+	},
+}
