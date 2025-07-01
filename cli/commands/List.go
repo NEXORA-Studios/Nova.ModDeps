@@ -17,21 +17,23 @@ var ListCmd = &cobra.Command{
 		metaFunc := meta.MetaFunctions{}
 		modPackage, err := metaFunc.Read()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "读取 mod.package.json 失败: %v\n", err)
-			os.Exit(1)
+			logger.Fatal(fmt.Sprintf("读取 mod.package.json 失败: %v\n", err))
 		}
-		t := table.NewWriter()
-		t.SetOutputMirror(os.Stdout)
-		t.AppendHeader(table.Row{"ID", "版本", "名称", "被依赖"})
-		for _, mod := range modPackage.Mods {
-			t.AppendRow(table.Row{
-				mod.ID,
-				mod.Version,
-				mod.Name,
-				strings.Join(mod.RequiredBy, ", "),
-			})
+		fmt.Printf("客户端版本: %s | ModLoader: [%s] | Mod 总数: %d\n", modPackage.MinecraftVersion, strings.Join(modPackage.ModLoader, ", "), len(modPackage.Mods))
+		if len(modPackage.Mods) > 0 {
+			t := table.NewWriter()
+			t.SetOutputMirror(os.Stdout)
+			t.AppendHeader(table.Row{"ID", "版本", "名称", "被依赖"})
+			for _, mod := range modPackage.Mods {
+				t.AppendRow(table.Row{
+					mod.ID,
+					mod.Version,
+					mod.Name,
+					strings.Join(mod.RequiredBy, ", "),
+				})
+			}
+			t.SetStyle(table.StyleLight)
+			t.Render()
 		}
-		t.SetStyle(table.StyleLight)
-		t.Render()
 	},
 }

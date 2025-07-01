@@ -31,10 +31,10 @@ func (m *MetaFunctions) Read() (IModPackageJson, error) {
 	return modPackageJson, nil
 }
 
-func (m *MetaFunctions) GetMetaVersion() (string, error) {
+func (m *MetaFunctions) GetMetaVersion() (int, error) {
 	modPackageJson, err := m.Read()
 	if err != nil {
-		return "", err
+		return -1, err
 	}
 
 	return modPackageJson.InternalVersion, nil
@@ -86,7 +86,7 @@ func (m *MetaFunctions) GetModById(id string) (IModItem, error) {
 		}
 	}
 
-	return IModItem{}, errors.New("mod not found")
+	return IModItem{}, errors.New("模组不存在")
 }
 
 func (m *MetaFunctions) GetDependenciesById(id string) ([]IModDependencyItem, error) {
@@ -97,5 +97,3 @@ func (m *MetaFunctions) GetDependenciesById(id string) ([]IModDependencyItem, er
 
 	return mods.Dependencies, nil
 }
-
-// IModItem.RequiredBy 字段用于记录哪些 mod 依赖此 mod，便于依赖安全移除

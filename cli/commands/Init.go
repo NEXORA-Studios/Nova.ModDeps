@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/NEXORA-Studios/Nova.ModDeps/core/instance"
 	"github.com/NEXORA-Studios/Nova.ModDeps/core/meta"
 	"github.com/spf13/cobra"
@@ -12,19 +14,21 @@ var InitCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		minecraftVersion, modLoader, err := instance.LoadInstance()
 		if err != nil {
-			panic(err)
+			logger.Fatal(fmt.Sprintf("初始化失败: %v", err))
 		}
 		if minecraftVersion == "" {
-			panic("未找到 Minecraft 版本，版本 JSON 存在吗？")
+			logger.Fatal("未找到 Minecraft 版本，版本 JSON 存在吗？")
 		}
-		
+
 		var metaFunc = meta.MetaFunctions{}
 		metaFunc.Write(meta.IModPackageJson{
-			InternalVersion:  "1.0.0",
+			InternalVersion:  1,
 			InternalPlatform: "modrinth",
 			MinecraftVersion: minecraftVersion,
 			ModLoader:        modLoader,
 			Mods:             []meta.IModItem{},
 		})
+
+		
 	},
 }

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 
+	"github.com/NEXORA-Studios/Nova.ModDeps/core/lock"
 	"github.com/NEXORA-Studios/Nova.ModDeps/core/meta"
 	"github.com/spf13/cobra"
 )
@@ -55,7 +55,7 @@ func AddModByVersion(projectID, versionID, requiredBy string) error {
 	for _, dep := range v.Dependencies {
 		if dep.DependencyType != "required" || dep.ProjectID == "" || dep.VersionID == "" {
 			if _, err := metaFunc.GetModById(dep.ProjectID); err != nil {
-				return fmt.Errorf("获取依赖版本失败：项目 %s 的作者没有在 Modrinth 上指定依赖的版本，且目前列表中没有已经配置版本的依赖\n          请先安装项目 %s 的对应版本，然后再试一次", v.ProjectID, dep.ProjectID)
+				logger.Fatal(fmt.Sprintf("获取依赖版本失败：项目 %s 的作者没有在 Modrinth 上指定依赖的版本，且目前列表中没有已经配置版本的依赖\n          请先安装项目 %s 的对应版本，然后再试一次", v.ProjectID, dep.ProjectID))
 			}
 		}
 	}
@@ -64,6 +64,8 @@ func AddModByVersion(projectID, versionID, requiredBy string) error {
 	if err != nil {
 		return err
 	}
+	// 新增：写入 lockfile pending
+	lock.UpsertPending(projectID, versionID)
 	// 递归添加依赖
 	for _, dep := range v.Dependencies {
 		if dep.DependencyType != "required" || dep.ProjectID == "" {
@@ -111,9 +113,9 @@ var AddCmd = &cobra.Command{
 		versionID := args[1]
 		err := AddModByVersion(projectID, versionID, "")
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "添加失败: %v\n", err)
-			os.Exit(1)
+			logger.Error(fmt.Sprintf("添加失败: %v", err))
+			return
 		}
-		fmt.Printf("已成功添加 Mod %s 及其依赖\n", projectID)
+		logger.Info(fmt.Sprintf("已成功添加 Mod %s 及其依赖", projectID))
 	},
 }

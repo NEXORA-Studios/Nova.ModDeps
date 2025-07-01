@@ -3,7 +3,7 @@ package meta
 type MetaFunctions struct{}
 
 type IModPackageJson struct {
-	InternalVersion  string     `json:"__version__"`
+	InternalVersion  int        `json:"__version__"`
 	InternalPlatform string     `json:"__platform__"`
 	MinecraftVersion string     `json:"minecraftVersion"`
 	ModLoader        []string   `json:"modLoader"`

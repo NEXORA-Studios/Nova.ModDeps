@@ -22,3 +22,18 @@ func GetProjectVersion(id string) ([]IMrModVersion, error) {
 	}
 	return versions, nil
 }
+
+func GetVersionMetadata(id string) (IMrModVersion, error) {
+	requester := api.Requester{}
+	path := fmt.Sprintf("/version/%s", id)
+	response, err := requester.Get(path, map[string]string{})
+	if err != nil {
+		return IMrModVersion{}, err
+	}
+	var version IMrModVersion
+	err = json.Unmarshal([]byte(response), &version)
+	if err != nil {
+		return IMrModVersion{}, err
+	}
+	return version, nil
+}

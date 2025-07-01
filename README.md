@@ -67,7 +67,14 @@ Nova.ModDeps (NovaDM CLI) 是一个用于管理 Minecraft 模组依赖的命令�
 ./novadm.exe remove <模组的 Modrinth Project ID> [bypass]
 ```
 
+从 lockfile 执行检查/安装/卸载：
+
+```bash
+./novadm.exe install
+```
+
 更多信息查看：
+
 ```bash
 ./novadm.exe help
 ```

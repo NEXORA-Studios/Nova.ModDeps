@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/NEXORA-Studios/Nova.ModDeps/core"
 )
 
 func LoadInstance() (string, []string, error) {
@@ -12,13 +14,8 @@ func LoadInstance() (string, []string, error) {
 	var minecraftVersion string = ""
 	var modLoader []string = []string{}
 
-	cwd, err := os.Getwd()
-	if err != nil {
-		return "", []string{}, err
-	}
-
 	// 检查目前目录下是否有 json 文件
-	jsonFiles, err := filepath.Glob(filepath.Join(cwd, "*.json"))
+	jsonFiles, err := filepath.Glob(filepath.Join(filepath.Dir(core.GetModPackageJsonPath()), "*.json"))
 	if err != nil {
 		return "", []string{}, err
 	}

@@ -30,7 +30,7 @@ func (m *MetaFunctions) RemoveMod(id string) error {
 	}
 
 	if !found {
-		return fmt.Errorf("mod %s not found", id)
+		return fmt.Errorf("模组 %s 不存在", id)
 	}
 
 	modPackageJson.Mods = mods

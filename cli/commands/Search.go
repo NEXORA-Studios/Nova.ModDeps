@@ -37,17 +37,19 @@ var SearchCmd = &cobra.Command{
 		if len(args) == 2 {
 			p, err := strconv.Atoi(args[1])
 			if err != nil {
-				panic("页码必须是数字")
+				logger.Error("页码必须是数字")
+				return
 			}
 			page = p - 1
 		}
 		offset := page * 10
 		result, err := modrinth.Search(name, offset)
 		if err != nil {
-			panic(err)
+			logger.Error(fmt.Sprintf("搜索失败: %v", err))
+			return
 		}
 		if len(result.Hits) == 0 {
-			fmt.Println("未找到相关模组")
+			logger.Warn("未找到相关模组")
 			return
 		}
 

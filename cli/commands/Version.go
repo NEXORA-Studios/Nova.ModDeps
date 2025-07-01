@@ -20,17 +20,18 @@ func min(a, b int) int {
 	return b
 }
 
+
 // PrintProjectVersionsWithPagination 打印指定项目的所有版本，支持本地分页
 func PrintProjectVersionsWithPagination(projectID string, page int, size int) {
 	versions, err := modrinth.GetProjectVersion(projectID)
 	if err != nil {
-		panic(fmt.Sprintf("获取版本失败: %v\n", err))
+		logger.Fatal(fmt.Sprintf("获取版本失败: %v\n", err))
 	}
 	var localMeta *meta.IModPackageJson
 	metaFunc := meta.MetaFunctions{}
 	m, err := metaFunc.Read()
 	if err != nil {
-		panic(fmt.Sprintf("读取 mod.package.json 失败: %v\n请确认是否在 Minecraft 实例根目录下运行，和 mod.package.json 文件是否存在\n若不存在，请先使用 \"novadm init\" 初始化", err))
+		logger.Fatal(fmt.Sprintf("读取 mod.package.json 失败: %v\n请确认是否在 Minecraft 实例根目录下运行，和 mod.package.json 文件是否存在\n若不存在，请先使用 \"novadm init\" 初始化", err))
 	}
 	localMeta = &m
 	if size <= 0 {
@@ -39,7 +40,7 @@ func PrintProjectVersionsWithPagination(projectID string, page int, size int) {
 	total := len(versions)
 	start := (page - 1) * size
 	if start >= total {
-		fmt.Println("没有更多数据了。")
+		logger.Warn("没有更多数据了。")
 		return
 	}
 	end := min(start+size, total)

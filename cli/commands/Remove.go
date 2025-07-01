@@ -2,10 +2,9 @@ package commands
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
-	"github.com/NEXORA-Studios/Nova.ModDeps/cli/utils"
+	"github.com/NEXORA-Studios/Nova.ModDeps/core/lock"
 	"github.com/NEXORA-Studios/Nova.ModDeps/core/meta"
 	"github.com/spf13/cobra"
 )
@@ -23,23 +22,25 @@ var RemoveCmd = &cobra.Command{
 		// 检查 requiredBy
 		mod, err := metaFunc.GetModById(modID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "移除失败: %v\n", err)
-			os.Exit(1)
+			logger.Warn(fmt.Sprintf("检查依赖失败: %v", err))
 		}
 
 		if !bypass && len(mod.RequiredBy) > 0 {
 			// 黄色警告
-			fmt.Fprintf(os.Stderr, "%s警告：该 Mod 被以下 Mod 依赖：[%v]，移除可能导致依赖问题，操作已中断！\n      使用 --bypass 参数强制删除%s\n", utils.ColorYellow, strings.Join(mod.RequiredBy, ", "), utils.ColorReset)
-			os.Exit(1)
+			logger.Warn(fmt.Sprintf("该 Mod 被这些 Mod 依赖：[%v]，移除可能导致依赖问题，操作已中断！\n      使用 --bypass 参数强制删除", strings.Join(mod.RequiredBy, ", ")))
+			return
 		}
 
 		err = metaFunc.RemoveMod(modID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "移除失败: %v\n", err)
-			os.Exit(1)
+			logger.Error(fmt.Sprintf("移除失败: %v", err))
+			return
 		}
 
-		fmt.Printf("已成功移除 Mod %s 及其依赖关系\n", modID)
+		// 新增：写入 lockfile needremove
+		lock.AddNeedRemove(modID, mod.Version)
+
+		logger.Info(fmt.Sprintf("已成功移除 Mod %s", modID))
 	},
 }
 
