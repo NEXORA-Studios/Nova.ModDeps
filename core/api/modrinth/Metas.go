@@ -7,6 +7,21 @@ import (
 	"github.com/NEXORA-Studios/Nova.ModDeps/core/api"
 )
 
+func GetProjectMetadata(id string) (IMrModProject, error) {
+	requester := api.Requester{}
+	path := fmt.Sprintf("/project/%s", id)
+	response, err := requester.Get(path, map[string]string{})
+	if err != nil {
+		return IMrModProject{}, err
+	}
+	var project IMrModProject
+	err = json.Unmarshal([]byte(response), &project)
+	if err != nil {
+		return IMrModProject{}, err
+	}
+	return project, nil
+}
+
 // GetProjectVersion 根据项目 id 获取所有版本信息
 func GetProjectVersion(id string) ([]IMrModVersion, error) {
 	requester := api.Requester{}

@@ -76,6 +76,7 @@ func (m *MetaFunctions) GetMods() ([]IModItem, error) {
 
 func (m *MetaFunctions) GetModById(id string) (IModItem, error) {
 	mods, err := m.GetMods()
+	
 	if err != nil {
 		return IModItem{}, err
 	}

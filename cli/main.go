@@ -25,6 +25,9 @@ func main() {
 	rootCmd.AddCommand(commands.AddCmd)
 	rootCmd.AddCommand(commands.RemoveCmd)
 	rootCmd.AddCommand(commands.InstallCmd)
+	rootCmd.AddCommand(commands.LoadCmd)
+	rootCmd.AddCommand(commands.DlremoteCmd)
+	rootCmd.AddCommand(commands.CacheCleanCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		logger.Fatal(fmt.Sprintf("执行命令失败: %v\n", err))

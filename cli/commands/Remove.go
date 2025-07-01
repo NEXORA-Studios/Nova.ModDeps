@@ -31,7 +31,6 @@ var RemoveCmd = &cobra.Command{
 			return
 		}
 
-		err = metaFunc.RemoveMod(modID)
 		if err != nil {
 			logger.Error(fmt.Sprintf("移除失败: %v", err))
 			return
@@ -40,10 +39,10 @@ var RemoveCmd = &cobra.Command{
 		// 新增：写入 lockfile needremove
 		lock.AddNeedRemove(modID, mod.Version)
 
-		logger.Info(fmt.Sprintf("已成功移除 Mod %s", modID))
+		logger.Info(fmt.Sprintf("已计划移除 Mod %s", modID))
 	},
 }
 
 func init() {
-	RemoveCmd.Flags().BoolVarP(&bypass, "bypass", "b", false, "强制删除")
+	RemoveCmd.Flags().BoolVarP(&bypass, "bypass", "b", false, "跳过依赖检查")
 }

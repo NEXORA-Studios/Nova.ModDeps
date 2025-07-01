@@ -17,20 +17,10 @@ type IMrModProject struct {
 	Title             string   `json:"title"`
 	Description       string   `json:"description"`
 	Categories        []string `json:"categories"`
-	DisplayCategories []string `json:"display_categories"`
 	Versions          []string `json:"versions"`
-	Downloads         int64    `json:"downloads"`
-	Follows           int      `json:"follows"`
-	IconURL           string   `json:"icon_url"`
-	DateCreated       string   `json:"date_created"`
-	DateModified      string   `json:"date_modified"`
 	LatestVersion     string   `json:"latest_version"`
-	License           string   `json:"license"`
 	ClientSide        string   `json:"client_side"`
 	ServerSide        string   `json:"server_side"`
-	Gallery           []string `json:"gallery"`
-	FeaturedGallery   *string  `json:"featured_gallery"`
-	Color             int      `json:"color"`
 }
 
 type IMrModVersion struct {

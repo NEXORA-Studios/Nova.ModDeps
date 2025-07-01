@@ -53,7 +53,10 @@ func AddModByVersion(projectID, versionID, requiredBy string) error {
 	}
 	// 检查 requiredBy 是否能被满足，避免有作者没有在 Modrinth 上指定依赖的版本
 	for _, dep := range v.Dependencies {
-		if dep.DependencyType != "required" || dep.ProjectID == "" || dep.VersionID == "" {
+		if dep.DependencyType == "incompatible" {
+			continue
+		}
+		if dep.DependencyType != "required" || dep.VersionID == "" {
 			if _, err := metaFunc.GetModById(dep.ProjectID); err != nil {
 				logger.Fatal(fmt.Sprintf("获取依赖版本失败：项目 %s 的作者没有在 Modrinth 上指定依赖的版本，且目前列表中没有已经配置版本的依赖\n          请先安装项目 %s 的对应版本，然后再试一次", v.ProjectID, dep.ProjectID))
 			}
@@ -116,6 +119,6 @@ var AddCmd = &cobra.Command{
 			logger.Error(fmt.Sprintf("添加失败: %v", err))
 			return
 		}
-		logger.Info(fmt.Sprintf("已成功添加 Mod %s 及其依赖", projectID))
+		logger.Info(fmt.Sprintf("已计划添加 Mod %s 及其依赖", projectID))
 	},
 }

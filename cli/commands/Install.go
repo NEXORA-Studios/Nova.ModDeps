@@ -11,6 +11,7 @@ import (
 	"github.com/NEXORA-Studios/Nova.ModDeps/core"
 	"github.com/NEXORA-Studios/Nova.ModDeps/core/fs"
 	"github.com/NEXORA-Studios/Nova.ModDeps/core/lock"
+	"github.com/NEXORA-Studios/Nova.ModDeps/core/meta"
 	"github.com/spf13/cobra"
 )
 
@@ -47,9 +48,15 @@ var InstallCmd = &cobra.Command{
 		}
 
 		// 3. needRemove
+		metaFunc := meta.MetaFunctions{}
+
 		for _, item := range uLockFile.NeedRemove {
 			fs.RemoveFile(item.Path)
 			lock.Remove(item.ID, item.Version)
+			err = metaFunc.RemoveMod(item.ID)
+			if err != nil {
+				logger.Error("从 mod.package.json 移除 mod 失败: " + err.Error())
+			}
 			logger.Info("已删除并移除 needRemove 项: " + item.Path)
 		}
 

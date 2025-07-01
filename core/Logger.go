@@ -9,8 +9,12 @@ import (
 
 type Logger struct{}
 
+func (l *Logger) Debug(message string) {
+	fmt.Printf("%s[DBG] %s\n%s", utils.ColorGreen, message, utils.ColorReset)
+}
+
 func (l *Logger) Info(message string) {
-	fmt.Printf("%s[INF] %s\n%s", utils.ColorBlue, message, utils.ColorReset)
+	fmt.Printf("%s[INF] %s\n%s", utils.ColorCyan, message, utils.ColorReset)
 }
 
 func (l *Logger) Warn(message string) {

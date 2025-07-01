@@ -27,57 +27,12 @@ Nova.ModDeps (NovaDM CLI) 是一个用于管理 Minecraft 模组依赖的命令�
 
 ### 通过 GitHub Actions 产物下载
 
-每次主分支推送或 PR 合并后，GitHub Actions 会自动为 Windows、macOS、Linux 构建产物。可在 [Actions 页面](https://github.com/你的用户名/Nova.ModDeps/actions) 下载对应平台的 novadm.exe。
+每次主分支推送或 PR 合并后，GitHub Actions 会自动为 Windows、macOS、Linux 构建产物\
+可在 [Actions 页面](https://github.com/你的用户名/Nova.ModDeps/actions) 下载对应平台的 novadm.exe。
 
 ## 基本用法
 
-初始化项目：
-
-```bash
-./novadm.exe init
-```
-
-搜索模组：
-
-```bash
-./novadm.exe search <模组名称> [页码]
-```
-
-搜索模组版本：
-
-```bash
-./novadm.exe version <模组的 Modrinth Project ID> [页码]
-```
-
-添加模组：
-
-```bash
-./novadm.exe add <模组的 Modrinth Project ID> <模组的 Modrinth Version ID>
-```
-
-列出依赖：
-
-```bash
-./novadm.exe list
-```
-
-移除模组：
-
-```bash
-./novadm.exe remove <模组的 Modrinth Project ID> [bypass]
-```
-
-从 lockfile 执行检查/安装/卸载：
-
-```bash
-./novadm.exe install
-```
-
-更多信息查看：
-
-```bash
-./novadm.exe help
-```
+[命令列表](./docs/Commmands.md)
 
 ## 贡献
 
