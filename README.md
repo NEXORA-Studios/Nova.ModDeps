@@ -32,7 +32,7 @@ Nova.ModDeps (NovaDM CLI) 是一个用于管理 Minecraft 模组依赖的命令�
 
 ## 基本用法
 
-[命令列表](./docs/Commmands.md)
+[命令列表](./docs/Commands.md)
 
 ## 贡献
 

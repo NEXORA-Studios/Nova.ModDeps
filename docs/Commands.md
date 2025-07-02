@@ -28,22 +28,26 @@
 > -   当初始化 `mod.package.json` 时，会自动检测 Minecraft 版本和 ModLoader 类型
 > -   如果文件已存在且未使用 `--force` 标志，命令会失败并提示用户
 
-## novadm list
+## novadm list [--json]
 
 查看当前 Mod 列表。
 
-## novadm search <name> [page]
+-   `--json, -j`: 以 JSON 格式输出
+
+## novadm search <name> [page] [--json]
 
 使用 Modrinth API 搜索 Mod，支持分页。
 
 -   `<name>` 为 Mod 名称
 -   `[page]` 为页码，默认为 1
+-   `--json, -j`: 以 JSON 格式输出
 
-## novadm version <project_id>
+## novadm version <project_id> [--json]
 
 查看指定 Modrinth 工程的所有版本信息
 
 -   `<project_id>` 为 Modrinth 工程 ID
+-   `--json, -j`: 以 JSON 格式输出
 
 ## novadm add <project_id> <version_id>
 
